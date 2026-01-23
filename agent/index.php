@@ -13,7 +13,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -23,38 +23,65 @@
 
         .chat-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             height: 90vh;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            border: 3px solid #e5e7eb;
         }
 
         .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #dc2626;
         }
 
-        .chat-header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        .chat-header p {
-            font-size: 14px;
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text .next {
+            color: white;
+        }
+
+        .logo-text .det {
+            color: #dc2626;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
             opacity: 0.9;
+            margin-top: 2px;
+            color: #60a5fa;
+        }
+
+        .country-flags {
+            display: flex;
+            gap: 8px;
+            font-size: 24px;
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
-            background: #f8f9fa;
+            padding: 25px;
+            background: #f8fafc;
         }
 
         .message {
@@ -79,30 +106,35 @@
         }
 
         .message-content {
-            max-width: 70%;
-            padding: 12px 18px;
-            border-radius: 18px;
+            max-width: 75%;
+            padding: 14px 20px;
+            border-radius: 16px;
             word-wrap: break-word;
+            line-height: 1.6;
         }
 
         .message.user .message-content {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: white;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
         }
 
         .message.assistant .message-content {
             background: white;
-            color: #333;
-            border: 1px solid #e0e0e0;
+            color: #1e293b;
+            border: 2px solid #e5e7eb;
             border-bottom-left-radius: 4px;
+            border-left: 4px solid #dc2626;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .message.assistant .message-content strong {
-            color: #667eea;
+            color: #1e3a8a;
             display: block;
             margin-top: 10px;
             margin-bottom: 5px;
+            font-weight: 600;
         }
 
         .message.assistant .message-content ul,
@@ -117,10 +149,11 @@
 
         .loading {
             display: none;
-            padding: 12px 18px;
+            padding: 14px 20px;
             background: white;
-            border-radius: 18px;
-            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            border: 2px solid #e5e7eb;
+            border-left: 4px solid #dc2626;
             max-width: 70%;
         }
 
@@ -130,13 +163,13 @@
 
         .loading-dots {
             display: flex;
-            gap: 4px;
+            gap: 6px;
         }
 
         .loading-dots span {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
@@ -159,45 +192,51 @@
         }
 
         .chat-input-container {
-            padding: 20px;
+            padding: 20px 25px;
             background: white;
-            border-top: 1px solid #e0e0e0;
+            border-top: 3px solid #e5e7eb;
         }
 
         .chat-input-wrapper {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
 
         .chat-input {
             flex: 1;
-            padding: 12px 18px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
+            padding: 14px 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
             font-size: 15px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background: #f8fafc;
         }
 
         .chat-input:focus {
-            border-color: #667eea;
+            border-color: #1e3a8a;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
         }
 
         .send-button {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
         }
 
         .send-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
         }
 
         .send-button:active {
@@ -208,64 +247,101 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
         .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px 18px;
-            border-radius: 18px;
-            border: 1px solid #fcc;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 14px 20px;
+            border-radius: 12px;
+            border: 2px solid #fecaca;
+            border-left: 4px solid #dc2626;
             margin-bottom: 20px;
+            font-weight: 500;
         }
 
         /* Scrollbar personalizado */
         .chat-messages::-webkit-scrollbar {
-            width: 8px;
+            width: 10px;
         }
 
         .chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #e5e7eb;
+            border-radius: 10px;
         }
 
         .chat-messages::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 4px;
+            background: linear-gradient(180deg, #1e3a8a 0%, #dc2626 100%);
+            border-radius: 10px;
         }
 
         .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #764ba2;
+            background: linear-gradient(180deg, #1e40af 0%, #b91c1c 100%);
         }
 
         .welcome-message {
             text-align: center;
             padding: 40px 20px;
-            color: #666;
+            color: #475569;
         }
 
         .welcome-message h2 {
-            color: #667eea;
+            color: #1e3a8a;
             margin-bottom: 15px;
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .welcome-message h2 .highlight {
+            color: #dc2626;
         }
 
         .welcome-message p {
-            margin-bottom: 10px;
-            line-height: 1.6;
+            margin-bottom: 12px;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .welcome-countries {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .country-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #1e3a8a;
+        }
+
+        .country-flag {
+            font-size: 24px;
         }
 
         .example-questions {
-            margin-top: 20px;
+            margin-top: 25px;
             text-align: left;
             background: white;
-            padding: 20px;
+            padding: 25px;
             border-radius: 12px;
-            border: 1px solid #e0e0e0;
+            border: 2px solid #e5e7eb;
+            border-left: 4px solid #dc2626;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
 
         .example-questions h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 16px;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 17px;
+            font-weight: 700;
         }
 
         .example-questions ul {
@@ -273,42 +349,70 @@
         }
 
         .example-questions li {
-            padding: 8px 0;
-            color: #555;
+            padding: 12px 15px;
+            color: #475569;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            border-radius: 8px;
+            margin-bottom: 5px;
         }
 
         .example-questions li:hover {
-            color: #667eea;
+            background: #f1f5f9;
+            color: #1e3a8a;
+            transform: translateX(5px);
         }
 
         .example-questions li:before {
-            content: "💬 ";
-            margin-right: 8px;
+            content: "💬";
+            margin-right: 10px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <div class="chat-container">
         <div class="chat-header">
-            <h1>🏢 NextDet Inmobiliaria</h1>
-            <p>Asistente de Inversión en Chile y Argentina</p>
+            <div class="chat-header-left">
+                <div>
+                    <div class="logo-text">
+                        <span class="next">next</span><span class="det">det</span>
+                    </div>
+                    <div class="header-subtitle">Tecnología Disruptiva Minería</div>
+                </div>
+            </div>
+            <div class="country-flags">
+                <span title="Chile">🇨🇱</span>
+                <span title="Argentina">🇦🇷</span>
+            </div>
         </div>
 
         <div class="chat-messages" id="chatMessages">
             <div class="welcome-message">
-                <h2>¡Bienvenido!</h2>
-                <p>Soy tu asistente especializado en inversión inmobiliaria en Chile y Argentina para ciudadanos estadounidenses.</p>
-                <p>Puedo ayudarte con información sobre procesos de compra, requisitos, costos, impuestos y más.</p>
+                <h2>¡Bienvenido a <span class="highlight">NextDet</span> Inmobiliaria!</h2>
+                <p>Tu asistente especializado en inversión inmobiliaria para ciudadanos estadounidenses</p>
+                
+                <div class="welcome-countries">
+                    <div class="country-box">
+                        <span class="country-flag">🇨🇱</span>
+                        <span>Chile</span>
+                    </div>
+                    <div class="country-box">
+                        <span class="country-flag">🇦🇷</span>
+                        <span>Argentina</span>
+                    </div>
+                </div>
+
+                <p>Puedo ayudarte con información sobre procesos de compra, requisitos legales, costos, impuestos y mucho más.</p>
                 
                 <div class="example-questions">
-                    <h3>Preguntas frecuentes:</h3>
+                    <h3>💡 Preguntas frecuentes:</h3>
                     <ul>
                         <li onclick="askQuestion('¿Puedo comprar propiedad siendo estadounidense?')">¿Puedo comprar propiedad siendo estadounidense?</li>
-                        <li onclick="askQuestion('¿Qué documentos necesito para comprar en Chile?')">¿Qué documentos necesito para comprar en Chile?</li>
-                        <li onclick="askQuestion('¿Cuáles son los impuestos al comprar?')">¿Cuáles son los impuestos al comprar?</li>
-                        <li onclick="askQuestion('¿Cuánto tiempo demora el proceso?')">¿Cuánto tiempo demora el proceso?</li>
+                        <li onclick="askQuestion('¿Qué es el RUT y cómo lo obtengo en Chile?')">¿Qué es el RUT y cómo lo obtengo en Chile?</li>
+                        <li onclick="askQuestion('¿Cuáles son los impuestos al comprar en cada país?')">¿Cuáles son los impuestos al comprar en cada país?</li>
+                        <li onclick="askQuestion('¿Cuánto tiempo demora el proceso de compra?')">¿Cuánto tiempo demora el proceso de compra?</li>
+                        <li onclick="askQuestion('¿La propiedad me da residencia automática?')">¿La propiedad me da residencia automática?</li>
                     </ul>
                 </div>
             </div>
