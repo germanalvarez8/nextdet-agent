@@ -1,0 +1,27 @@
+# Archivo de configuración con credenciales sensibles
+.env
+
+# Archivos de logs
+*.log
+error.log
+access.log
+
+# Archivos temporales
+*.tmp
+*.swp
+*.swo
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de respaldo
+*.bak
+*.backup
