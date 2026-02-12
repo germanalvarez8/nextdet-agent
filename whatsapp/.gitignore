@@ -5,6 +5,8 @@
 *.log
 error.log
 access.log
+webhook_log.txt
+messages_log.txt
 
 # Archivos temporales
 *.tmp

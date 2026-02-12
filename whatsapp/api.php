@@ -4,9 +4,10 @@
  * API REST para el servicio de WhatsApp
  *
  * Endpoints disponibles:
+ * GET  /api.php?action=health - Verificar estado del servicio
  * POST /api.php?action=send_template - Enviar mensaje con plantilla
  * POST /api.php?action=send_text - Enviar mensaje de texto simple
- * GET /api.php?action=health - Verificar estado del servicio
+ * GET/POST /api.php?action=webhook - Webhook para recibir mensajes (ngrok)
  */
 
 // Cargar configuración y clase
@@ -185,55 +186,79 @@ switch ($action) {
         sendResponse($resultado, $resultado['success'] ? 200 : 400);
         break;
 
-    case 'send_presupuesto':
-        // Endpoint especializado para enviar presupuestos de minería
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            sendResponse([
-                'success' => false,
-                'message' => 'Método no permitido. Usa POST.',
-                'error' => 'method_not_allowed'
-            ], 405);
-        }
+    case 'webhook':
+        // Webhook para recibir mensajes de WhatsApp (ngrok)
+        $verifyToken = env('WEBHOOK_VERIFY_TOKEN', 'mi_token_secreto');
 
-        // Obtener datos del body
-        $input = file_get_contents('php://input');
-        $data = json_decode($input, true);
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            // Verificación del webhook por Meta
+            $mode = $_GET['hub_mode'] ?? '';
+            $token = $_GET['hub_verify_token'] ?? '';
+            $challenge = $_GET['hub_challenge'] ?? '';
 
-        // Validar datos requeridos
-        $requiredFields = ['phone', 'cliente_nombre', 'presupuesto_numero', 'proyecto_tipo', 'monto', 'fecha_validez'];
-        $missingFields = [];
-
-        foreach ($requiredFields as $field) {
-            if (!isset($data[$field]) || empty($data[$field])) {
-                $missingFields[] = $field;
+            if ($mode === 'subscribe' && $token === $verifyToken) {
+                // Verificación exitosa - devolver el challenge
+                http_response_code(200);
+                echo $challenge;
+                exit;
+            } else {
+                sendResponse([
+                    'success' => false,
+                    'message' => 'Verificación fallida',
+                    'error' => 'invalid_verify_token'
+                ], 403);
             }
         }
 
-        if (!empty($missingFields)) {
-            sendResponse([
-                'success' => false,
-                'message' => 'Datos incompletos',
-                'error' => 'invalid_request',
-                'missing_fields' => $missingFields
-            ], 400);
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Recibir mensajes entrantes
+            $input = file_get_contents('php://input');
+            $data = json_decode($input, true);
+
+            // Log del mensaje recibido
+            $logFile = __DIR__ . '/webhook_log.txt';
+            $logEntry = date('Y-m-d H:i:s') . " - " . $input . "\n";
+            file_put_contents($logFile, $logEntry, FILE_APPEND);
+
+            // Extraer información del mensaje
+            $entry = $data['entry'][0] ?? null;
+            $changes = $entry['changes'][0] ?? null;
+            $value = $changes['value'] ?? null;
+
+            if ($value && isset($value['messages'])) {
+                foreach ($value['messages'] as $message) {
+                    $from = $message['from'] ?? '';
+                    $msgId = $message['id'] ?? '';
+                    $timestamp = $message['timestamp'] ?? '';
+                    $type = $message['type'] ?? '';
+
+                    // Extraer contenido según el tipo
+                    $content = '';
+                    if ($type === 'text') {
+                        $content = $message['text']['body'] ?? '';
+                    } elseif ($type === 'image') {
+                        $content = '[Imagen recibida]';
+                    } elseif ($type === 'audio') {
+                        $content = '[Audio recibido]';
+                    } elseif ($type === 'document') {
+                        $content = '[Documento recibido]';
+                    }
+
+                    // Log estructurado
+                    $msgLog = sprintf(
+                        "[%s] De: %s | Tipo: %s | Contenido: %s\n",
+                        date('Y-m-d H:i:s', (int)$timestamp),
+                        $from,
+                        $type,
+                        $content
+                    );
+                    file_put_contents(__DIR__ . '/messages_log.txt', $msgLog, FILE_APPEND);
+                }
+            }
+
+            // Siempre responder 200 a Meta
+            sendResponse(['success' => true, 'message' => 'Mensaje recibido']);
         }
-
-        // Enviar mensaje con plantilla de presupuesto
-        $resultado = $whatsapp->sendTemplateMessage(
-            $data['phone'],
-            'presupuesto_mineria',
-            'es',
-            [
-                $data['cliente_nombre'],
-                $data['presupuesto_numero'],
-                $data['proyecto_tipo'],
-                $data['monto'],
-                $data['fecha_validez']
-            ]
-        );
-
-        // Retornar resultado
-        sendResponse($resultado, $resultado['success'] ? 200 : 400);
         break;
 
     default:
@@ -246,7 +271,7 @@ switch ($action) {
                 'GET /api.php?action=health' => 'Verificar estado del servicio',
                 'POST /api.php?action=send_template' => 'Enviar mensaje con plantilla',
                 'POST /api.php?action=send_text' => 'Enviar mensaje de texto',
-                'POST /api.php?action=send_presupuesto' => 'Enviar notificación de presupuesto'
+                'GET/POST /api.php?action=webhook' => 'Webhook para recibir mensajes de WhatsApp'
             ]
         ], 404);
         break;
