@@ -54,10 +54,8 @@
         require_once __DIR__ . '/../src/WhatsAppService.php';
         
         $service = new WhatsAppService();
-        $message = '';
-        $messageType = '';
-        
-        // Procesar envío de formulario
+
+        // PRG: Procesar POST y redirigir para evitar reenvío al recargar
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             try {
                 if ($_POST['action'] === 'send_template') {
@@ -65,36 +63,42 @@
                     $customerName = $_POST['customer_name'] ?? '';
                     $budgetId = $_POST['budget_id'] ?? '';
                     $total = $_POST['total'] ?? '';
-                    
+
                     $result = $service->sendBudgetNotification($phoneNumber, [
                         'customer_name' => $customerName,
                         'budget_id' => $budgetId,
                         'total' => $total
                     ]);
-                    
-                    $message = '¡Mensaje de plantilla enviado exitosamente! ID: ' . ($result['messages'][0]['id'] ?? 'N/A');
-                    $messageType = 'success';
-                    
+
+                    $msg = '¡Mensaje de plantilla enviado exitosamente! ID: ' . ($result['messages'][0]['id'] ?? 'N/A');
+                    $type = 'success';
+
                 } elseif ($_POST['action'] === 'send_text') {
                     $phoneNumber = $_POST['phone_number'] ?? '';
                     $text = $_POST['text_message'] ?? '';
-                    
+
                     $result = $service->sendTextMessage($phoneNumber, $text);
-                    
-                    $message = '¡Mensaje de texto enviado exitosamente! ID: ' . ($result['messages'][0]['id'] ?? 'N/A');
-                    $messageType = 'success';
+
+                    $msg = '¡Mensaje de texto enviado exitosamente! ID: ' . ($result['messages'][0]['id'] ?? 'N/A');
+                    $type = 'success';
                 }
-                
+
             } catch (Exception $e) {
-                $message = 'Error: ' . $e->getMessage();
-                $messageType = 'danger';
+                $msg = 'Error: ' . $e->getMessage();
+                $type = 'danger';
             }
+
+            // Redirigir con resultado en query string
+            $params = http_build_query(['msg' => $msg ?? '', 'type' => $type ?? 'info']);
+            header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?') . '?' . $params);
+            exit;
         }
-        
-        // Mostrar mensaje de resultado
-        if ($message) {
+
+        // Mostrar mensaje de resultado desde redirect
+        if (isset($_GET['msg']) && $_GET['msg'] !== '') {
+            $messageType = in_array($_GET['type'] ?? '', ['success', 'danger', 'info']) ? $_GET['type'] : 'info';
             echo '<div class="alert alert-' . $messageType . ' alert-dismissible fade show" role="alert">';
-            echo htmlspecialchars($message);
+            echo htmlspecialchars($_GET['msg']);
             echo '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
             echo '</div>';
         }

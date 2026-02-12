@@ -75,14 +75,14 @@ class WhatsAppService
         
         // Nombre de la plantilla (debe existir en Meta Business Manager)
         // Ajustar según el nombre real de tu plantilla
-        $templateName = 'jaspers_market_image_cta_v1';
+        $templateName = 'jaspers_market_order_confirmation_v1';
         
         // Variables para la plantilla
         // El orden debe coincidir con {{1}}, {{2}}, {{3}} en la plantilla de Meta
         $variables = [
             $budgetData['customer_name'],  // {{1}}
             $budgetData['budget_id'],      // {{2}}
-            $budgetData['total']           // {{3}}
+            $budgetData['total']
         ];
         
         // Si la plantilla tiene más variables, agregarlas aquí
@@ -94,7 +94,7 @@ class WhatsAppService
         return $this->client->sendTemplate(
             $phoneNumber,
             $templateName,
-            'es', // Idioma español
+            'en_US',
             $variables
         );
     }
